@@ -1,96 +1,92 @@
 /**
  * Created by ljunb on 16/8/21.
  */
-import React, {PureComponent} from 'react';
-import {
-    View,
-    Image,
-    TouchableOpacity,
-    StyleSheet,
-} from 'react-native'
-import {Navigator} from 'react-native-deprecated-custom-components'
-import {observer, inject} from 'mobx-react/native'
-import ScrollableTabView from 'react-native-scrollable-tab-view'
-import FeedsCategoryBar from '../../components/FeedsCategoryBar'
-import FeedHomeList from './FeedHomeList';
-import FeedEvaluatingList from '../../pages/feed/FeedEvaluatingList'
-import FeedKnowledgeList from '../../pages/feed/FeedKnowledgeList';
-import FeedDelicacyList from '../../pages/feed/FeedDelicacyList';
+import React, {PureComponent} from "react";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {inject, observer} from "mobx-react/native";
+import ScrollableTabView from "react-native-scrollable-tab-view";
+import FeedsCategoryBar from "../../components/FeedsCategoryBar";
+import FeedDelicacyList from "../../pages/feed/FeedDelicacyList";
+import MenuItems from "../../components/MenuItems";
 
-const titles = ['首页', '评测', '知识', '美食'];
-const controllers = [
-    {categoryId: 1, controller: FeedHomeList},
-    {categoryId: 2, controller: FeedEvaluatingList},
-    {categoryId: 3, controller: FeedKnowledgeList},
-    {categoryId: 4, controller: FeedDelicacyList}
-]
+
+const listurl = "http://food.boohee.com/fb/v1/feeds/category_feed"
+const module = 3
 
 @inject('account')
 @observer
 export default class Home extends PureComponent {
 
-    _pictureAction = () => {
-        const {account: {name}} = this.props
-        if (name) {
-            alert(name)
-        } else {
-            this.props.navigator.push({
-                id: 'Login',
-                sceneConfig: Navigator.SceneConfigs.FloatFromBottom
-            })
+    componentWillMount(){
+        this.state = {
+            isVisiable: false
         }
     }
 
+    onPressAction = () => {
+        this.setState({isVisiable: !this.state.isVisiable});
+    }
+
+    onMenuPress = (value) =>{
+        this.setState({isVisiable: !this.state.isVisiable});
+        switch (value){
+            case "myScanner":
+                this.props.navigator.push({
+                    id: 'Scanner',
+                    passProps: {
+                        onBarCodeRead: obj => alert(JSON.stringify(obj))
+                    }
+                })
+                break;
+            default:
+                alert(value)
+        }
+    }
+
+    onPress = (murl) => {
+        Linking.canOpenURL('tableau://').then(supported => { // weixin://  alipay://
+            if (supported) {
+                Linking.openURL('tableau://');
+            } else {
+                ToastAndroid.show(`请先安装XXX`,ToastAndroid.SHORT);
+            }
+        });
+        // alert(murl);
+    }
     render() {
         const {navigator} = this.props;
-
+        let isVisiable = this.state.isVisiable
         return (
             <View style={{flex: 1}}>
-                <HeaderView pictureAction={this._pictureAction}/>
-                <ScrollableTabView
-                    renderTabBar={() => <FeedsCategoryBar tabNames={titles}/>}
-                    tabBarPosition='top'
-                    scrollWithoutAnimation={false}
-                >
-                    {controllers.map((data, index) => {
-                        let Component = data.controller;
-                        return (
-                            <Component
-                                key={titles[index]}
-                                tabLabel={titles[index]}
-                                categoryId={data.categoryId}
-                                navigator={navigator}
+                <View style={{flex: 1}}>
+                    <View style={[styles.header, {borderBottomWidth: gScreen.onePix}]}>
+                        <Text>消息</Text>
+                        <TouchableOpacity
+                            activeOpacity={0.75}
+                            style={styles.photo}
+                            onPress={this.onPressAction}
+                        >
+                            <Image
+                                style={{width: 20, height: 20}}
+                                source={require('../../resource/ic_analyze_search_red.png')}
+                                resizeMode="contain"
                             />
-                        )
-                    })}
-                </ScrollableTabView>
+                        </TouchableOpacity>
+                    </View>
+                    <FeedDelicacyList
+                        navigator={navigator}
+                        listurl={listurl}
+                        moduleId={module}
+                    />
+                    {isVisiable?
+                        <MenuItems onMenuPress={this.onMenuPress}/>:<View/>
+                    }
+                </View>
             </View>
         )
     }
 }
 
-const HeaderView = ({pictureAction}) => {
-    return (
-        <View style={[styles.header, {borderBottomWidth: gScreen.onePix}]}>
-            <Image
-                style={{width: 60, height: 30}}
-                source={require('../../resource/ic_feed_nav.png')}
-                resizeMode="contain"
-            />
-            <TouchableOpacity
-                activeOpacity={0.75}
-                style={styles.photo}
-                onPress={pictureAction}
-            >
-                <Image
-                    style={{width: 20, height: 20}}
-                    source={require('../../resource/ic_feed_camera.png')}
-                    resizeMode="contain"
-                />
-            </TouchableOpacity>
-        </View>
-    )
-}
 
 const styles = StyleSheet.create({
     header: {

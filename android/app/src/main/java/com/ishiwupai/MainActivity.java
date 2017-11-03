@@ -1,6 +1,8 @@
 package com.ishiwupai;
 
 import com.facebook.react.ReactActivity;
+import cn.jpush.android.api.JPushInterface;
+import android.os.Bundle;
 
 public class MainActivity extends ReactActivity {
 
@@ -11,5 +13,29 @@ public class MainActivity extends ReactActivity {
     @Override
     protected String getMainComponentName() {
         return "iShiWuPai";
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        JPushInterface.init(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JPushInterface.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JPushInterface.onResume(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

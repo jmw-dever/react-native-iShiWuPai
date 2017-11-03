@@ -1,3 +1,4 @@
+import Storage from  '../store/MyStorage'
 
 const delay = timeout => {
     return new Promise((resolve, reject) => {
@@ -21,4 +22,22 @@ const get = ({url, params = {}, timeout}) => {
     }
 }
 
-export { get }
+const post = ({url, params = {}, timeout}) => {
+    let formData = new FormData()
+    let token = null;
+    Storage.load('data',data => token = data.token)
+    formData.append('token',token)
+    if (Object.keys(params).length !== 0) {
+        for (const key in params) {
+            paramArr.append(`${key}`,`${params[key]}`)
+        }
+    }
+    let options = {
+        method: 'POST',
+        headers: {},
+        body: formData
+    }
+    return fetch(url,options)
+}
+
+export { get,post }

@@ -2,7 +2,7 @@
  * Created by ljunb on 2016/12/9.
  * 食物百科页面
  */
-import React, {Component} from 'react';
+import React, {PureComponent,Component} from 'react';
 import {
     StyleSheet,
     View,
@@ -10,124 +10,102 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
+    ToastAndroid,
+    Linking
 } from 'react-native';
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react/native'
-import FoodEncyclopediaStore from '../../store/foodEncyclopediaStore'
 import NetInfoDecorator from '../../common/NetInfoDecorator'
 import Toast from 'react-native-easy-toast'
 import Loading from '../../components/Loading'
+import MenuItems from '../../components/MenuItems'
+import FeedsCategoryBar from "../../components/FeedsCategoryBar";
+import ScrollableTabView from "react-native-scrollable-tab-view";
+import MenuCategory from "./MenuCategory"
+
+const titles = ['EKP', 'EIP', 'tableau', 'unkwon',"unknow2","unknow2"];
+// const titles = ['EKP', 'EIP', 'tableau'];
+// const titles = ['EKP', 'EIP'];
+const controllers = [
+    {categoryId: 1, listurl: gIntent.ip + '/api/menu', moduleId: 3},
+    {categoryId: 2, listurl: gIntent.ip + '/api/menu', moduleId: 4},
+    {categoryId: 3, listurl: gIntent.ip + '/api/menu', moduleId: 3},
+    {categoryId: 4, listurl: gIntent.ip + '/api/menu', moduleId: 4},
+    {categoryId: 5, listurl: gIntent.ip + '/api/menu', moduleId: 4},
+    {categoryId: 6, listurl: gIntent.ip +'/api/menu', moduleId: 4}
+]
 
 @NetInfoDecorator
 @inject('account', 'app')
 @observer
 export default class FoodEncyclopedia extends Component {
-    foodEncyclopediaStore = new FoodEncyclopediaStore()
 
-    componentWillReact() {
-        const {errorMsg} = FoodEncyclopediaStore
-        errorMsg && this.toast && this.toast.show(errorMsg)
-    }
-
-    componentWillReceiveProps(nextProps) {
-        const {isConnected} = nextProps
-        const {isNoResult} = this.foodEncyclopediaStore
-        if (isConnected && isNoResult) {
-            this.foodEncyclopediaStore.fetchCategoryList()
+    componentWillMount(){
+        this.state = {
+            isVisiable: false
         }
     }
 
-    searchAction = () => alert('search')
+    onPressAction = () => {
+        this.setState({isVisiable: !this.state.isVisiable});
+    }
 
-    resetBarStyle = () => this.props.app.updateBarStyle('light-content')
-
-    foodHandleAction = (handleTitle) => {
-        const {account: {name}, app} = this.props
-        switch (handleTitle) {
-            case '饮食分析':
-                if (name) {
-                    alert(name)
-                } else {
-                    this.props.navigator.push({
-                        id: 'Login',
-                        sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
-                        passProps: {onResetBarStyle: this.resetBarStyle}
-                    })
-                }
-                break;
-            case '搜索对比':
-                if (name) {
-                    alert(name)
-                } else {
-                    this.props.navigator.push({
-                        id: 'Login',
-                        sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
-                        passProps: {onResetBarStyle: this.resetBarStyle}
-                    })
-                }
-                break
-            case '扫码对比':
+    onMenuPress = (value) =>{
+        this.setState({isVisiable: !this.state.isVisiable});
+        switch (value){
+            case "myScanner":
                 this.props.navigator.push({
                     id: 'Scanner',
                     passProps: {
                         onBarCodeRead: obj => alert(JSON.stringify(obj))
                     }
                 })
-                break
+                break;
+            default:
+                alert(value)
         }
     }
 
-    _onPressCategoryItem = (kind, category) => {
-        const {app, navigator} = this.props
-        app.updateBarStyle('default')
-
-        navigator.push({
-            id: 'Foods',
-            passProps: {
-                kind,
-                category,
-                onResetBarStyle: this.resetBarStyle
-            }
-        })
-    }
-
-    _reconnectHandle = () => {
-        this.foodEncyclopediaStore.fetchCategoryList()
-    }
-
     render() {
-        const {foodCategoryList, isFetching} = this.foodEncyclopediaStore
         const {isConnected} = this.props
+        let isVisiable = this.state.isVisiable
 
         return (
             <View style={{flex: 1}}>
-                <ScrollView
-                    bounces={false}
-                    showsVerticalScrollIndicator={false}
-                    automaticallyAdjustContentInsets={false}
-                    removeClippedSubviews
-                    style={{width: gScreen.width, height: gScreen.height}}
-                    contentContainerStyle={{alignItems: 'center', backgroundColor: '#f5f5f5', paddingBottom: 10}}
-                >
-                    <HeaderView searchAction={this.searchAction}/>
-                    <FoodHandleView handleAction={this.foodHandleAction}/>
-                    {isConnected ?
-                        <View>
-                            {foodCategoryList.map(foodCategory => {
-                                return (
-                                    <FoodCategoryView
-                                        key={`FoodCategory-${foodCategory.kind}`}
-                                        foodCategory={foodCategory}
-                                        onPress={this._onPressCategoryItem}
-                                    />
-                                )
-                            })}
-                        </View> : <ReconnectView onPress={this._reconnectHandle}/>}
-                </ScrollView>
-                <Loading isShow={isFetching}/>
-                <Toast ref={toast => this.toast = toast}/>
+                <View>
+                    <View style={[styles.header, {borderBottomWidth: gScreen.onePix}]}>
+                        <Text>工作台</Text>
+                        <TouchableOpacity
+                            activeOpacity={0.75}
+                            style={styles.photo}
+                            onPress={this.onPressAction}
+                        >
+                            <Image
+                                style={{width: 20, height: 20}}
+                                source={require('../../resource/ic_analyze_search_red.png')}
+                                resizeMode="contain"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <Image
+                        style={styles.headerContainer}
+                        source={require('../../resource/img_home_bg.png')}
+                    >
+                        <Image
+                            style={styles.headerLogo}
+                            source={require('../../resource/ic_head_logo.png')}
+                            resizeMode="contain"
+                        />
+                    </Image>
+                    {isVisiable?
+                        <MenuItems onMenuPress={this.onMenuPress}/>:<View/>
+                    }
+                </View>
+                {isConnected ?
+                    <MenuCategory tableName={titles} controllers={controllers}/>: <ReconnectView onPress={this._reconnectHandle}/>}
             </View>
         )
+
     }
 }
 
@@ -143,111 +121,20 @@ const ReconnectView = ({onPress}) => {
     )
 }
 
-const HeaderView = ({searchAction}) => {
+
+const LogoView = (isVisiable) => {
     return (
-        <Image
-            style={styles.headerContainer}
-            source={require('../../resource/img_home_bg.png')}
-        >
+        <View>
             <Image
-                style={styles.headerLogo}
-                source={require('../../resource/ic_head_logo.png')}
-                resizeMode="contain"
-            />
-            <View style={{alignItems: 'center'}}>
-                <Text style={{color: 'white', marginBottom: 15, fontSize: 15}}>查 询 食 物
-                    信 息</Text>
-                <TouchableOpacity
-                    activeOpacity={0.75}
-                    style={styles.headerSearchContainer}
-                    onPress={searchAction}
-                >
-                    <Image style={{width: 20, height: 20, marginHorizontal: 5}}
-                           source={require('../../resource/ic_home_search.png')}/>
-                    <Text style={{color: 'rgba(222, 113, 56, 0.8)', fontSize: 15}}>请输入食物名称</Text>
-                </TouchableOpacity>
-            </View>
-        </Image>
-    )
-};
-
-const FoodHandleView = ({handleAction}) => {
-    return (
-        <View style={styles.foodHandleContainer}>
-            <HandleItem title="饮食分析"
-                        imageName={require('../../resource/ic_home_analyse.png')}
-                        onPress={() => handleAction('饮食分析')}
-            />
-            <View style={styles.line}/>
-            <HandleItem title="搜索对比"
-                        imageName={require('../../resource/ic_search_compare.png')}
-                        onPress={() => handleAction('搜索对比')}/>
-            <View style={styles.line}/>
-            <HandleItem title="扫码对比"
-                        imageName={require('../../resource/ic_scan_compare.png')}
-                        onPress={() => handleAction('扫码对比')}/>
-        </View>
-    )
-};
-
-const HandleItem = ({
-    imageName,
-    title,
-    onPress
-}) => {
-    return (
-        <TouchableOpacity
-            activeOpacity={0.75}
-            style={styles.handelItem}
-            onPress={onPress}
-        >
-            <Image style={{width: 28, height: 28}} source={imageName}/>
-            <Text style={{fontSize: 13, color: 'gray'}}>{title}</Text>
-        </TouchableOpacity>
-    )
-};
-
-const FoodCategoryView = ({
-    foodCategory,
-    onPress
-}) => {
-
-    let title = '食物分类';
-    if (foodCategory.kind === 'brand') {
-        title = '热门品牌';
-    } else if (foodCategory.kind === 'restaurant') {
-        title = '连锁餐饮';
-    }
-
-    return (
-        <View style={{backgroundColor: 'white', marginTop: 10, overflow: 'hidden'}}>
-            <View style={styles.groupHeader}>
-                <Text style={{color: 'gray'}}>{title}</Text>
-                <View style={{width: gScreen.width - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
-                    <Image style={{width: gScreen.width - 16 * 2, height: 14}}
-                           source={require('../../resource/img_home_list_bg.png')}
-                    />
-                </View>
-            </View>
-            <View style={styles.categoryContainer}>
-                {foodCategory.categories.map((category) => {
-                    return (
-                        <TouchableOpacity
-                            key={category.id}
-                            activeOpacity={0.75}
-                            style={styles.category}
-                            onPress={() => onPress(foodCategory.kind, category)}
-                        >
-                            <Image
-                                style={styles.categoryIcon}
-                                source={{uri: category.image_url}}
-                                resizeMode="contain"
-                            />
-                            <Text style={styles.categoryTitle}>{category.name}</Text>
-                        </TouchableOpacity>
-                    )
-                })}
-            </View>
+                style={styles.headerContainer}
+                source={require('../../resource/img_home_bg.png')}
+            >
+                <Image
+                    style={styles.headerLogo}
+                    source={require('../../resource/ic_head_logo.png')}
+                    resizeMode="contain"
+                />
+            </Image>
         </View>
     )
 };
@@ -284,6 +171,7 @@ const styles = StyleSheet.create({
         width: gScreen.width - 16 * 2,
         backgroundColor: 'white',
         marginTop: 10,
+        marginLeft: 16,
         alignItems: 'center',
         flexDirection: 'row',
         shadowColor: 'gray',
@@ -292,7 +180,6 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
     },
     handelItem: {
-        flex: 1,
         height: 60,
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -303,30 +190,28 @@ const styles = StyleSheet.create({
         width: 0.5,
         backgroundColor: '#d9d9d9'
     },
-    categoryContainer: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        width: gScreen.width - 16 * 2
-    },
     groupHeader: {
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    category: {
-        width: (gScreen.width - 16 * 2) / 3,
-        height: 65,
+    header: {
+        flexDirection: 'row',
+        height: gScreen.navBarHeight,
+        paddingTop: gScreen.navBarPaddingTop,
         alignItems: 'center',
-        marginBottom: 25,
+        borderBottomColor: '#d9d9d9',
+        backgroundColor: 'white',
+        justifyContent: 'center'
     },
-    categoryIcon: {
-        width: 40,
-        height: 40,
+    photo: {
+        width: __IOS__ ? 44 : 50,
+        height: __IOS__ ? 44 : 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        right: 0,
+        top: gScreen.navBarPaddingTop
     },
-    categoryTitle: {
-        color: 'gray',
-        fontSize: 12,
-        marginTop: 5,
-    },
+
 })

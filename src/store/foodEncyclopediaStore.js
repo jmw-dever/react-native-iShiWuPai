@@ -1,21 +1,29 @@
 /**
  * Created by ljunb on 2016/12/14.
  */
-import {observable, runInAction, computed, action} from 'mobx'
-import {get} from '../common/HttpTool'
+import {observable, computed, action, runInAction} from 'mobx'
+import {get,post} from '../common/HttpTool'
 
-class FoodEncyclopediaStore {
+export default class FoodEncyclopediaStore {
     @observable foodCategoryList = []
     @observable errorMsg = ''
+    @observable isRefreshing = false;
+    @observable page = 1
 
+    constructor(url){
+        this.listurl = url
+        this.fetchCategoryList()
+    }
     @action
     fetchCategoryList = async() => {
         try {
-            const url = 'http://food.boohee.com/fb/v1/categories/list'
-            const responseData = await get({url, timeout: 30}).then(res => res.json())
+            const url = this.listurl
+            const responseData = await post({url}).then(res => res)
 
             runInAction(() => {
-                this.foodCategoryList.replace(responseData.group)
+                this.isRefreshing = false
+                let listInfo =JSON.parse(responseData._bodyInit).listInfo;
+                this.foodCategoryList.replace(listInfo)
                 this.errorMsg = ''
             })
         } catch (error) {
@@ -37,5 +45,3 @@ class FoodEncyclopediaStore {
         return this.foodCategoryList.length === 0
     }
 }
-
-export default FoodEncyclopediaStore

@@ -15,8 +15,13 @@ const FeedSingleImageItem = ({
     source,
     viewCount,
     images,
+    infoCount,
     onPress
 }) => {
+    let readFlag = true
+    if(viewCount == 0){
+        readFlag = false
+    }
     return (
         <TouchableOpacity
             activeOpacity={0.75}
@@ -41,6 +46,7 @@ const FeedSingleImageItem = ({
                 source={{uri: images[0]}}
                 defaultSource={require('../resource/img_news_default.png')}
             />
+            <Text style={styles.infoNum} isShow={!readFlag}>{infoCount}</Text>
         </TouchableOpacity>
     )
 }
@@ -80,6 +86,20 @@ const styles = StyleSheet.create({
     viewCount: {
         color: 'rgb(150,150,150)',
         fontSize: 13
+    },
+    infoNum: {
+        fontSize: 12,
+        minWidth: 20,
+        height: 20,
+        backgroundColor: 'red',
+        borderRadius: 24,
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        color: 'white',
+        paddingLeft: 4,
+        paddingRight: 5,
+        textAlign: 'center'
     }
 })
 

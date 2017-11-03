@@ -95,6 +95,10 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        manifestPlaceholders = [
+            JPUSH_APPKEY:"3ae31c11b4280db1863ffb4c",
+            APP_CHANNEL:"developer-default"
+        ]
     }
     splits {
         abi {
@@ -129,6 +133,10 @@ dependencies {
     compile project(':react-native-camera')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
+    compile "com.facebook.react:react-native:+"  // From node_modules
+    compile fileTree(dir: "libs", include: ["*.jar"])
+    compile project(':jpush-react-native')  // 添加 jpush 依赖
+    compile project(':jcore-react-native')  // 添加 jcore 依赖
     compile "com.facebook.react:react-native:+"  // From node_modules
 }
 

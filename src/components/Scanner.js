@@ -32,7 +32,7 @@ const ScannerPromptTitle = () => {
     return (
         <View style={{marginTop: 30, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <Image style={{width: 22, height: 22}} source={require('../resource/ic_scan_gray.png')}/>
-            <Text style={{color: '#fff', fontSize: 18}}>请将食物条形码放入圈内</Text>
+            <Text style={{color: '#fff', fontSize: 18}}>请将二维码放在摄像头下方</Text>
         </View>
     )
 }

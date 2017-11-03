@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react/native'
+import Storage from "../../store/MyStorage"
 
 @inject('app')
 @observer
@@ -22,10 +23,12 @@ export default class Profile extends PureComponent {
     _onLogin = () => {
         const {app, navigator} = this.props
         app.updateBarStyle('default')
-        navigator.push({
-            id: 'Login',
-            sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
-            passProps: {onResetBarStyle: ()=>app.updateBarStyle('light-content')}
+        Storage.remove("data",() =>{
+            navigator.push({
+                id: 'Login',
+                sceneConfig: Navigator.SceneConfigs.FloatFromBottom,
+                passProps: {onResetBarStyle: ()=>app.updateBarStyle('light-content')}
+            })
         })
     }
 
@@ -39,32 +42,13 @@ export default class Profile extends PureComponent {
 
         return (
             <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
-                <HeaderView settingAction={this._settingAction} loginAction={this._onLogin}/>
-                <View style={[styles.cellContainer, cellStyle]}>
-                    <ProfileStaticCell
-                        title="我的照片"
-                        style={{borderBottomWidth: gScreen.onePix}}
-                        imageName={require('../../resource/ic_my_photos.png')}
-                        onPress={this._onPressStaticCell}
-                    />
-                    <ProfileStaticCell
-                        title="我的收藏"
-                        style={{borderBottomWidth: gScreen.onePix}}
-                        imageName={require('../../resource/ic_my_collect.png')}
-                        onPress={this._onPressStaticCell}
-                    />
-                    <ProfileStaticCell
-                        title="上传食物数据"
-                        imageName={require('../../resource/ic_my_upload.png')}
-                        onPress={this._onPressStaticCell}
-                    />
-                </View>
+                <HeaderView settingAction={this._settingAction} logoutAction={this._onLogin}/>
             </View>
         )
     }
 }
 
-const HeaderView = ({settingAction, loginAction}) => {
+const HeaderView = ({settingAction, logoutAction}) => {
     return (
         <Image
             style={{width: gScreen.width, height: 230, alignItems: 'center', backgroundColor: 'transparent'}}
@@ -96,9 +80,9 @@ const HeaderView = ({settingAction, loginAction}) => {
                 <TouchableOpacity
                     activeOpacity={0.75}
                     style={styles.loginContainer}
-                    onPress={loginAction}
+                    onPress={logoutAction}
                 >
-                    <Text style={{color: 'white'}}>点击登录</Text>
+                    <Text style={{color: 'white'}}>切换帐号</Text>
                 </TouchableOpacity>
             </View>
         </Image>

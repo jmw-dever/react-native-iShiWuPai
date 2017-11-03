@@ -18,10 +18,9 @@ import FeedMultiImageCell from '../../components/FeedMultiImageCell'
 import Toast from 'react-native-easy-toast'
 import FeedBaseStore from '../../store/feedBaseStore'
 
-const DELICACY_ID = 4
-
 @observer
 export default class FeedDelicacyList extends PureComponent {
+
 
     state = {
         dataSource: new ListView.DataSource({
@@ -33,7 +32,9 @@ export default class FeedDelicacyList extends PureComponent {
     constructor(props) {
         super(props);
         // 初始状态
-        this.delicacyListStore = new FeedBaseStore(DELICACY_ID)
+        this.listurl = props.listurl
+        this.moduleId = props.moduleId
+        this.delicacyListStore = new FeedBaseStore(this.moduleId,this.listurl)
     }
 
     componentDidMount() {
@@ -103,17 +104,25 @@ class DelicacyItem extends PureComponent {
         onPress: React.PropTypes.func
     }
 
+    state = {
+        isTrue: true
+    }
+
     _onPress = () => {
         const {feed, onPress} = this.props
+        const {isTrue} = this.state
         onPress && onPress(feed)
+        feed.viewCount = 0
+        this.setState({isTrue: !isTrue});
     }
 
     render() {
         const {feed: {title, source, tail, images}} = this.props
-        const cellData = {title, source, images, viewCount: tail}
+        let infoCount = 10
+        const cellData = {title, source, images, viewCount: tail,infoCount}
 
         if (images.length === 1) {
-            return <FeedSingleImageCell {...cellData} onPress={this._onPress}/>
+            return <FeedSingleImageCell {...cellData} onPress={this._onPress} isTrue={this.state.isTrue}/>
         }
         return <FeedMultiImageCell {...cellData} onPress={this._onPress}/>
     }

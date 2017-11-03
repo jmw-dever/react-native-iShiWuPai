@@ -3,6 +3,10 @@
  */
 import { Dimensions, Platform, PixelRatio } from 'react-native'
 
+global.gIntent = {
+    ip: 'http://172.18.127.167'
+}
+
 global.gScreen = {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,

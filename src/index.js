@@ -7,7 +7,7 @@ import {
     StatusBar
 } from 'react-native';
 import {Navigator} from 'react-native-deprecated-custom-components'
-import {observer, inject} from 'mobx-react/native'
+import {observer, inject} from 'mobx-react'
 import Router from './common/Routers'
 
 @inject('app')
@@ -29,10 +29,10 @@ export default class App extends PureComponent {
     }
 
     render() {
-        const initialPage = __IOS__ ? 'TabBarView' : 'Splash'
+        const initialPage = __IOS__ ? 'Login' : 'Splash'
         return (
             <View style={{flex: 1}}>
-                <StatusBar barStyle={this.props.app.barStyle} animated />
+                <StatusBar barStyle={this.props.app.barStyle} animated/>
                 <Navigator
                     initialRoute={{id: initialPage}}
                     configureScene={this.configureScene}

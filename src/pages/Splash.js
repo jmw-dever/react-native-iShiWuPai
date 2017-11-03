@@ -3,13 +3,24 @@
  */
 import React, { Component } from 'react'
 import { Image } from 'react-native'
+import Storage from  '../store/MyStorage'
 
 export default class Splash extends Component {
     componentDidMount() {
         const { navigator } = this.props
-        this.timer = setTimeout(() => {
-            navigator.resetTo({id: 'TabBarView'})
-        }, 2000)
+        Storage.load('data',(data) => {
+            if(null == data || undefined == data){
+                this.timer = setTimeout(()=>{
+                    navigator.resetTo({id: 'Login'})
+                },2000)
+                this.props.isConnected = false
+            }else{
+                this.props.isConnected = true
+                this.timer = setTimeout(()=>{
+                    navigator.resetTo({id: 'TabBarView'})
+                },2000)
+            }
+        })
     }
 
     componentWillUnmount() {

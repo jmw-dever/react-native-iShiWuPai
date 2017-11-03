@@ -3,9 +3,14 @@
  */
 const router = {
     'Splash': require('../pages/Splash'),
+
     'Login': require('../pages/Login'),
     'TabBarView': require('../pages/TabBarView'),
     'Scanner': require('../components/Scanner'),
+
+    'JpushDetail': require('../pages/JpushDetail'),
+
+    'MessageDetail': require('../pages/MessageDetail'),
 
     // home
     'Foods': require('../pages/home/Foods'),

@@ -11,8 +11,9 @@ export default class FeedStore {
     @observable isRefreshing = false;
     @observable isNoMore = true;
 
-    constructor(categoryId) {
+    constructor(categoryId,url) {
         this.categoryId = categoryId;
+        this.listurl = url
         this.fetchFeedList()
     }
 
@@ -20,7 +21,7 @@ export default class FeedStore {
     fetchFeedList = async () => {
         try {
             if (this.isRefreshing) this.page = 1
-            const url = 'http://food.boohee.com/fb/v1/feeds/category_feed'
+            const url = this.listurl
             const params = {
                 page: this.page,
                 category: this.categoryId,

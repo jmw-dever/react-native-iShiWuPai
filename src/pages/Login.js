@@ -7,32 +7,82 @@ import {
     View,
     Image,
     Text,
-    TouchableOpacity
+    TextInput,
+    TouchableOpacity,
+    ToastAndroid
 } from 'react-native'
-import Header from '../components/Header'
+import Header from '../components/LoginHeader'
 import {observer, inject} from 'mobx-react/native'
+import Storage from  '../store/MyStorage'
 
 @inject('app')
 @observer
 export default class Login extends PureComponent {
 
-    accounts = [
-        {name: 'QQ', icon: require('../resource/ic_account_qq.png')},
-        {name: '微信', icon: require('../resource/ic_account_wechat.png')},
-        {name: '微博', icon: require('../resource/ic_account_weibo.png')},
-        {name: '薄荷', icon: require('../resource/ic_account_boohee.png')}
-    ]
-
     componentWillMount() {
         const {app} = this.props
         app.barStyle === 'light-content' && app.updateBarStyle('default')
+        this.state = {
+            loginText: '登录',
+            registerText: '马上加入',
+            noAccount: '没有以上帐号?',
+            usernamePlaceHoler: '请输入帐号',
+            passwordPlaceHoler: '请输入密码',
+            username : null,
+            password: null
+        }
+
+        this.post = (url,data,callback) => {
+            let formData = new FormData()
+            for(let attr in data){
+                formData.append(attr,data[attr])
+            }
+
+            let options = {
+                method: 'POST',
+                headers: {},
+                body: formData
+            }
+
+            fetch(url,options).then((response) => response.text()).then((responseText) => {
+                callback(JSON.parse(responseText))
+            }).done()
+        }
     }
+
 
     onBack = () => {
         const {navigator, onResetBarStyle} = this.props
         onResetBarStyle && onResetBarStyle()
         navigator.pop()
     }
+
+    onPress = () =>{
+        const {navigator} = this.props
+        let username = this.state.username
+        let password = this.state.password
+        data = {
+            username: username,
+            password: password
+        }
+        url = gIntent.ip+'/api/login'
+        this.post(url,data,(datas)=>{
+            let message = datas.message
+            let status = datas.status
+            let data = datas.data
+            ToastAndroid.show(message,ToastAndroid.SHORT)
+            if(status == "0"){
+                Storage.save('data',JSON.stringify(data),null)
+                setTimeout(() =>{
+                    navigator.push({id : "TabBarView"})
+                },500)
+                this.props.isConnected = true
+            }else{
+                this.state.password = ""
+            }
+        })
+    }
+
 
     _renderAccountView = (account, key) => {
         const {name, icon} = account
@@ -52,19 +102,29 @@ export default class Login extends PureComponent {
     render() {
         return (
             <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
-                <Header title="登录" onBack={this.onBack}/>
+                <Header title={this.state.loginText} onBack={this.onBack}/>
                 <View style={styles.content}>
-                    <Text style={{textAlign: 'center'}}>不用注册，用以下账号直接登录</Text>
                     <View style={styles.accountWrapper}>
-                        {this.accounts.map(this._renderAccountView)}
+                        <TextInput style={styles.textInput} placeholder={this.state.usernamePlaceHoler} onChangeText={(text)=>{
+                            this.state.username = text
+                        }}></TextInput>
                     </View>
-                    <Text style={{textAlign: 'center'}}>没有以上账号？</Text>
+                    <View style={styles.accountWrapper}>
+                        <TextInput secureTextEntry={true} style={styles.textInput} value={this.state.password} placeholder={this.state.passwordPlaceHoler} onChangeText={(text) =>{
+                            this.state.password = text
+                        }}></TextInput>
+                    </View>
                     <TouchableOpacity
                         activeOpacity={0.75}
-                        style={styles.registerBtn}
+                        style={styles.btn}
+                        onPress={this.onPress}
                     >
-                        <Text style={{fontSize: 16, color: 'red'}}>注册</Text>
+                        <Text style={{fontSize: 16, color: '#000'}}>{this.state.loginText}</Text>
                     </TouchableOpacity>
+                    <Text style={{textAlign: 'right',marginRight: 20,marginTop: 10}}>
+                        <Text style={{fontSize: 16,marginRight: 10}}>{this.state.noAccount}</Text>
+                        <Text style={{fontSize: 16, color: 'red',marginLeft: 10}} onPress={()=> alert('regist')}>{this.state.registerText}</Text>
+                    </Text>
                 </View>
             </View>
         )
@@ -74,6 +134,14 @@ export default class Login extends PureComponent {
 const styles = StyleSheet.create({
     content: {
         paddingTop: 50
+    },
+    textInput: {
+        width: gScreen.width * 0.9,
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        justifyContent: 'center'
     },
     accountWrapper: {
         flexDirection: 'row',
@@ -85,8 +153,18 @@ const styles = StyleSheet.create({
     accountItem: {
         alignItems: 'center'
     },
+    btn: {
+        width: gScreen.width * 0.9,
+        alignSelf: 'center',
+        marginTop: 20,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     registerBtn: {
-        width: gScreen.width * 0.4,
+        width: gScreen.width * 0.9,
         marginTop: 20,
         height: 40,
         borderRadius: 20,
