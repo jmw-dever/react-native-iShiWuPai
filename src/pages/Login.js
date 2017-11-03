@@ -3,17 +3,19 @@
  */
 import React, { PureComponent } from 'react'
 import {
-    StyleSheet,
     View,
     Image,
     Text,
     TextInput,
     TouchableOpacity,
-    ToastAndroid
+    ToastAndroid,
+    Platform
 } from 'react-native'
 import Header from '../components/LoginHeader'
 import {observer, inject} from 'mobx-react/native'
 import Storage from  '../store/MyStorage'
+import Toast from 'react-native-root-toast'
+import StyleSheet  from '../common/StyleSheet'
 
 @inject('app')
 @observer
@@ -70,7 +72,37 @@ export default class Login extends PureComponent {
             let message = datas.message
             let status = datas.status
             let data = datas.data
-            ToastAndroid.show(message,ToastAndroid.SHORT)
+            if(Platform.OS === 'ios'){
+                // Add a Toast on screen.
+                let toast = Toast.show(message, {
+                    duration: Toast.durations.LONG,
+                    position: Toast.positions.CENTER,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                    onShow: () => {
+                        // calls on toast\`s appear animation start
+                    },
+                    onShown: () => {
+                        // calls on toast\`s appear animation end.
+                    },
+                    onHide: () => {
+                        // calls on toast\`s hide animation start.
+                    },
+                    onHidden: () => {
+                        // calls on toast\`s hide animation end.
+                    }
+                });
+
+                // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
+                setTimeout(function () {
+                    Toast.hide(toast);
+                }, 1000);
+            }else if(Platform.OS === 'android'){
+                ToastAndroid.show(message,ToastAndroid.SHORT)
+            }
+
             if(status == "0"){
                 Storage.save('data',JSON.stringify(data),null)
                 setTimeout(() =>{
