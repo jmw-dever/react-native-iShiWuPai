@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native'
+import MyStorage from '../store/MyStorage'
 
 export default class TabBar extends Component {
     static propType = {
@@ -20,9 +21,28 @@ export default class TabBar extends Component {
         tabIconNames: React.PropTypes.array
     }
 
+    state = {
+        allCount: 0
+    }
+
+    constructor(props){
+        super(props)
+        MyStorage.load("allCount",this.onCallBack)
+    }
+
+    onCallBack = (value) =>{
+        if(null != value){
+            this.setState({allCount: value})
+        }
+    }
+
     render() {
         const { activeTab, selectedTabIconNames, tabIconNames, tabNames, goToPage } = this.props
-
+        const {allCount} = this.state
+        let readFlag = false
+        if(allCount != 0){
+            readFlag = true
+        }
         return (
             <View style={[styles.tabs, {borderTopWidth: gScreen.onePix}]}>
                 {this.props.tabs.map((tab, i) => {
@@ -37,6 +57,7 @@ export default class TabBar extends Component {
                         >
                             <View style={styles.tabItem}>
                                 <Image style={styles.icon} source={icon}/>
+                                <Text style={styles.infoNum} isShow={!readFlag}>{allCount}</Text>
                                 <Text style={{color: color, fontSize: 12}}>{tabNames[i]}</Text>
                             </View>
                         </TouchableOpacity>
@@ -70,5 +91,19 @@ const styles = StyleSheet.create({
         width: 26,
         height: 26,
         marginBottom: 2
+    },
+    infoNum: {
+        fontSize: 12,
+        minWidth: 20,
+        height: 20,
+        backgroundColor: 'red',
+        borderRadius: 24,
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        color: 'white',
+        paddingLeft: 4,
+        paddingRight: 5,
+        textAlign: 'center'
     }
 })

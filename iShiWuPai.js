@@ -50,7 +50,6 @@ export default class Root extends React.Component {
                     if(msg != null){
                         myCurrent = msg;
                     }
-                    alert(msg);
                     myCurrent.push(message);
                     MyStorage.save(messageKey,myCurrent);
                 });
@@ -62,17 +61,37 @@ export default class Root extends React.Component {
                         value = 1;
                     }
                     MyStorage.save(messageKey+"count",value)
+                    MyStorage.load("allCount",(count) =>{
+                        if(null == count){
+                            count = 0;
+                        }
+                        count += value;
+                        MyStorage.save("allCount",count)
+                    })
                 });
             }
         });
         // 打开通知
         JPushModule.addReceiveOpenNotificationListener((map) => {
-            const {navigator} = this.props
             let extras = JSON.parse(map.extras);
             let messageKey = extras.messageKey
             MyStorage.save('currentKey',messageKey);
-            MyStorage.save(messageKey+"count",0);
-            this.state.navigator = this.props.navigator
+
+            MyStorage.load(messageKey+"count",(value)=>{
+                if(null == value){
+                    value = 0;
+                }
+                MyStorage.save(messageKey+"count",0)
+                MyStorage.load("allCount",(count) =>{
+                    if(null == count){
+                        count = 0;
+                    }
+                    count -= value;
+                    MyStorage.save("allCount",count)
+                })
+            });
+
+            MyStorage.save('isMessage','true');
             JPushModule.jumpToPushActivity("JPushDetailActivity");
         });
 

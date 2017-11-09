@@ -26,7 +26,8 @@ export default class FeedsCategoryBar extends Component {
     }
 
     state = {
-        minWidth: gScreen.width / 4
+        minWidth: gScreen.width / 4,
+        nowPage: 0
     }
 
     offsetX = new Animated.Value(0)
@@ -36,7 +37,10 @@ export default class FeedsCategoryBar extends Component {
     }
 
     setAnimationValue = ({value}) => {
-        let pageX = this.state.minWidth * value
+        let nowpage = this.props.activeTab
+        let val = value - 1;
+        let pageX = this.state.minWidth * val
+
         this.refs.scrollView.scrollTo({x: pageX,animated: true});
         this.offsetX.setValue(value)
     }

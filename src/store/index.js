@@ -3,8 +3,10 @@
  */
 import app from './common/app'
 import account from './common/account'
+import jpush from './common/account'
 
 export default {
     app,
-    account
+    account,
+    jpush
 }
