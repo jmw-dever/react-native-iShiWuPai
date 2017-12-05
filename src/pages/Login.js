@@ -6,7 +6,7 @@ import {Image, Platform, Text, TextInput, ToastAndroid, TouchableOpacity, View} 
 import Header from "../components/LoginHeader";
 import {inject, observer} from "mobx-react/native";
 import Storage from "../store/MyStorage";
-// import Toast from 'react-native-root-toast'
+import Toast from 'react-native-root-toast'
 import StyleSheet from "../common/StyleSheet";
 
 @inject('app')
