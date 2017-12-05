@@ -2581,6 +2581,10 @@ react-native-tab-view@^0.0.65:
   dependencies:
     prop-types "^15.5.8"
 
+react-native-upgrade@^0.0.1-beta:
+  version "0.0.1-beta"
+  resolved "http://registry.npm.taobao.org/react-native-upgrade/download/react-native-upgrade-0.0.1-beta.tgz#991bc3594a0df86600636fa5fbc5de039261fa09"
+
 react-native@0.44.0, react-native@>=0.19.0:
   version "0.44.0"
   resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.44.0.tgz#06427a30053f2d555c60fe0b9afcc6c778db09de"

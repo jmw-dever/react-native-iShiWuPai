@@ -9,10 +9,15 @@ import {
 import {Navigator} from 'react-native-deprecated-custom-components'
 import {observer, inject} from 'mobx-react'
 import Router from './common/Routers'
+import MyStorage from './store/MyStorage'
 
 @inject('app')
 @observer
 export default class App extends PureComponent {
+
+    constructor(props){
+        super(props)
+    }
 
     configureScene = route => {
         if (route.sceneConfig) return route.sceneConfig
@@ -29,7 +34,11 @@ export default class App extends PureComponent {
     }
 
     render() {
-        const initialPage = __IOS__ ? 'Login' : 'Splash'
+        let initialPage = __IOS__ ? 'Login' : 'Splash'
+        const {isMessage} = this.props
+        if(isMessage){
+            initialPage = 'Messages'
+        }
         return (
             <View style={{flex: 1}}>
                 <StatusBar barStyle={this.props.app.barStyle} animated/>

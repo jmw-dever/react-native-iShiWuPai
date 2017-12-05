@@ -27,7 +27,73 @@ export default class Root extends React.Component {
     }
 
     componentDidMount(){
+        JPushModule.notifyJSDidLoad((resultCode) => {
+            if (resultCode === 0) {
 
+            }
+        });
+
+        // 接收自定义消息
+        JPushModule.addReceiveCustomMsgListener((message) => {
+            if(null != message && "undefined" != message && "" != message){
+                //this.setState({pushMsg: message});
+                //alert(JSON.stringify(message));
+            }
+        });
+        // 接收推送通知
+        JPushModule.addReceiveNotificationListener((message) => {
+            if(null != message && "undefined" != message && "" != message){
+                let extras = JSON.parse(message.extras);
+                let messageKey = extras.messageKey
+                MyStorage.load(messageKey,(msg) =>{
+                    let myCurrent = [];
+                    if(msg != null){
+                        myCurrent = msg;
+                    }
+                    myCurrent.push(message);
+                    MyStorage.save(messageKey,myCurrent);
+                });
+
+                MyStorage.load(messageKey+"count",(value)=>{
+                    if(null != value){
+                        value ++;
+                    }else{
+                        value = 1;
+                    }
+                    MyStorage.save(messageKey+"count",value)
+                    MyStorage.load("allCount",(count) =>{
+                        if(null == count){
+                            count = 0;
+                        }
+                        count += value;
+                        MyStorage.save("allCount",count)
+                    })
+                });
+            }
+        });
+        // 打开通知
+        JPushModule.addReceiveOpenNotificationListener((map) => {
+            let extras = JSON.parse(map.extras);
+            let messageKey = extras.messageKey
+            MyStorage.save('currentKey',messageKey);
+
+            MyStorage.load(messageKey+"count",(value)=>{
+                if(null == value){
+                    value = 0;
+                }
+                MyStorage.save(messageKey+"count",0)
+                MyStorage.load("allCount",(count) =>{
+                    if(null == count){
+                        count = 0;
+                    }
+                    count -= value;
+                    MyStorage.save("allCount",count)
+                })
+            });
+
+            MyStorage.save('isMessage','true');
+            JPushModule.jumpToPushActivity("JPushDetailActivity");
+        });
 
     }
 

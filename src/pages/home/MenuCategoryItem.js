@@ -42,7 +42,7 @@ export default class MenuCategoryItem extends PureComponent{
             } else {
                 ToastAndroid.show(`请先安装XXX`,ToastAndroid.SHORT);
             }
-        }); 
+        });
         //alert(murl);
     }
     render () {

@@ -15,13 +15,20 @@ import {
 
 export default class MessageDetail extends Component {
 
+
+    componentWillMount() {
+        this.state = {
+            isVisiable: false
+        }
+    }
+
     onBackAction = () => {
         this.props.navigator.pop()
     }
 
     render() {
         const {msg} = this.props
-
+        const {isVisiable} = this.state
         return (
             <View>
                 <View>
@@ -36,7 +43,7 @@ export default class MessageDetail extends Component {
                                    resizeMode={"contain"}
                             />
                         </TouchableOpacity>
-                        <Text>消息通知</Text>
+                        <Text>消息详情</Text>
                         <TouchableOpacity
                             activeOpacity={0.75}
                             style={styles.photo}
