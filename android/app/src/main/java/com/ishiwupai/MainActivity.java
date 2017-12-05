@@ -38,4 +38,12 @@ public class MainActivity extends ReactActivity {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+     public MainActivity() {
+        mainActivity = this;
+     }
+     public static MainActivity getMainActivity() {
+        return mainActivity;
+     }
+     private static MainActivity mainActivity;
 }

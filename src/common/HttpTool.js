@@ -40,4 +40,23 @@ const post = ({url, params = {}, timeout}) => {
     return fetch(url,options)
 }
 
-export { get,post }
+const promise = async (url) => {
+    return new Promise((resolve, reject) => {
+        const URL = url
+
+        fetch(URL).then(response => {
+            if (response.status === 200) return response.json()
+            return null
+        }).then(responseData => {
+            if (responseData) {
+                resolve(responseData)
+            } else {
+                reject('请求出错！')
+            }
+        }).catch(error => {
+            reject('网络出错！')
+        })
+    })
+}
+
+export { get,post,promise }

@@ -3,25 +3,13 @@
  */
 
 
-import React, {PureComponent} from 'react'
-import {
-    StyleSheet,
-    View,
-    ListView,
-    ScrollView,
-    RefreshControl
-} from 'react-native'
-import {observer,inject} from 'mobx-react/native'
-import {reaction} from 'mobx'
-import Loading from '../../components/Loading'
-import LoadMoreFooter from '../../components/LoadMoreFooter'
-import FeedSingleImageCell from '../../components/FeedSingleImageCell'
-import FeedMultiImageCell from '../../components/FeedMultiImageCell'
-import Toast from 'react-native-easy-toast'
-import FeedBaseStore from '../../store/feedBaseStore'
+import React, {PureComponent} from "react";
+import {inject, observer} from "mobx-react/native";
+import {reaction} from "mobx";
 import FeedsCategoryBar from "../../components/FeedsCategoryBar";
 import ScrollableTabView from "react-native-scrollable-tab-view";
-import MenuCategoryItem from "./MenuCategoryItem"
+import MenuCategoryItem from "./MenuCategoryItem";
+import MenuCategoryIndex from "./MenuCategoryIndex";
 
 @inject('account')
 @observer
@@ -42,14 +30,20 @@ export default class MenuCategory extends PureComponent{
                 tabBarPosition='top'
                 scrollWithoutAnimation={false}
             >
+                <MenuCategoryIndex
+                    listurl=""
+                    tabLabel="0"
+                    navigator={navigator}
+                    key="0"/>
+
                 {controllers.map((data,index) => {
                     let controller = data.listurl
                     return (
                         <MenuCategoryItem
                             listurl={controller}
-                            tabLabel={index}
+                            tabLabel={index + 1}
                             navigator={navigator}
-                            key={index}/>
+                            key={index + 1}/>
                     )
                 })}
             </ScrollableTabView>

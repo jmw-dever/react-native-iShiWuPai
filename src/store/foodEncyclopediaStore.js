@@ -1,8 +1,8 @@
 /**
  * Created by ljunb on 2016/12/14.
  */
-import {observable, computed, action, runInAction} from 'mobx'
-import {get,post} from '../common/HttpTool'
+import {action, computed, observable, runInAction} from "mobx";
+import {post} from "../common/HttpTool";
 
 export default class FoodEncyclopediaStore {
     @observable foodCategoryList = []
@@ -22,7 +22,7 @@ export default class FoodEncyclopediaStore {
 
             runInAction(() => {
                 this.isRefreshing = false
-                let listInfo =JSON.parse(responseData._bodyInit).listInfo;
+                let listInfo =JSON.parse(responseData._bodyInit).list;
                 this.foodCategoryList.replace(listInfo)
                 this.errorMsg = ''
             })

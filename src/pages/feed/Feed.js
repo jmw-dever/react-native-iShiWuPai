@@ -4,13 +4,11 @@
 import React, {PureComponent} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {inject, observer} from "mobx-react/native";
-import ScrollableTabView from "react-native-scrollable-tab-view";
-import FeedsCategoryBar from "../../components/FeedsCategoryBar";
 import FeedDelicacyList from "../../pages/feed/FeedDelicacyList";
 import MenuItems from "../../components/MenuItems";
 
 
-const listurl = "http://food.boohee.com/fb/v1/feeds/category_feed"
+const listurl = gIntent.ip + "/api/message/getMessageCategory"
 const module = 3
 
 @inject('account')

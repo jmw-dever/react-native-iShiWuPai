@@ -3,7 +3,7 @@
  */
 
 import React, {PureComponent} from "react";
-import {StyleSheet, View,TouchableOpacity,Image,Text,Linking,RefreshControl,ScrollView} from "react-native";
+import {Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {observer} from "mobx-react/native";
 import {reaction} from "mobx";
 import Loading from "../../components/Loading";
@@ -36,14 +36,14 @@ export default class MenuCategoryItem extends PureComponent{
     };
 
     onPress = (murl) => {
-        Linking.canOpenURL(murl).then(supported => { // weixin://  alipay://
-            if (supported) {
-                Linking.openURL(murl);
-            } else {
-                ToastAndroid.show(`请先安装XXX`,ToastAndroid.SHORT);
-            }
-        });
-        //alert(murl);
+        // Linking.canOpenURL(murl).then(supported => { // weixin://  alipay://
+        //     if (supported) {
+        //         Linking.openURL(murl);
+        //     } else {
+        //         ToastAndroid.show(`请先安装XXX`,ToastAndroid.SHORT);
+        //     }
+        // });
+        alert(murl);
     }
     render () {
         const {foodCategoryList,isFetching,isRefreshing} = this.foodEncyclopediaStore
@@ -58,34 +58,40 @@ export default class MenuCategoryItem extends PureComponent{
                         }
             >
                 {!isFetching &&
-                <View style={styles.categoryView}>
-                    <View style={styles.groupHeader}>
-                        <Text style={{color: 'gray',alignSelf: 'center'}}>标题</Text>
-                        <View style={{width: gScreen.width - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
-                            <Image style={{width: gScreen.width - 16 * 2, height: 14}}
-                                   source={require('../../resource/img_home_list_bg.png')}
-                            />
-                        </View>
-                    </View>
-                    <View style={styles.categoryContainer}>
-                        {foodCategoryList.map((category) => {
+                <View>
+                    {foodCategoryList.map((category) => {
                             return (
-                                <TouchableOpacity
-                                    key={category.mindex}
-                                    activeOpacity={0.75}
-                                    style={styles.category}
-                                    onPress={() => this.onPress(category.murl)}
-                                >
-                                    <Image
-                                        style={styles.categoryIcon}
-                                        source={{uri: category.mimageView}}
-                                        resizeMode="contain"
-                                    />
-                                    <Text style={styles.categoryTitle}>{category.mtitle}</Text>
-                                </TouchableOpacity>
+                                <View style={styles.categoryView} key={category.id}>
+                                    <View style={styles.groupHeader}>
+                                        <Text style={{color: 'gray',alignSelf: 'center'}}>{category.mName}</Text>
+                                        <View style={{width: gScreen.width - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
+                                            <Image style={{width: gScreen.width - 16 * 2, height: 14}}
+                                                   source={require('../../resource/img_home_list_bg.png')}
+                                            />
+                                        </View>
+                                    </View>
+                                    <View style={styles.categoryContainer}>
+                                        {category.mChildren.map((children) => {
+                                            return (
+                                                <TouchableOpacity
+                                                    key={children.id}
+                                                    activeOpacity={0.75}
+                                                    style={styles.category}
+                                                    onPress={() => this.onPress(children.mUrl)}
+                                                >
+                                                    <Image
+                                                        style={styles.categoryIcon}
+                                                        source={{uri: children.mImg}}
+                                                        resizeMode="contain"
+                                                    />
+                                                    <Text style={styles.categoryTitle}>{children.mName}</Text>
+                                                </TouchableOpacity>
+                                            )
+                                        })}
+                                    </View>
+                                </View>
                             )
                         })}
-                    </View>
                 </View>
                 }
                 <Loading isShow={isFetching}/>
@@ -99,8 +105,9 @@ const styles = StyleSheet.create({
     category: {
         width: (gScreen.width - 16 * 2) / 4,
         height: 65,
+        marginTop: 10,
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 20,
     },
     categoryIcon: {
         width: 40,
@@ -119,7 +126,6 @@ const styles = StyleSheet.create({
     },
     categoryContainer: {
         flex: 1,
-        padding: 10,
         flexDirection: 'row',
         flexWrap: 'wrap',
     },

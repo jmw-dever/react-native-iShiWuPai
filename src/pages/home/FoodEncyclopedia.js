@@ -2,48 +2,46 @@
  * Created by ljunb on 2016/12/9.
  * 食物百科页面
  */
-import React, {PureComponent,Component} from 'react';
-import {
-    StyleSheet,
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    ScrollView,
-    ToastAndroid,
-    Linking
-} from 'react-native';
-import {Navigator} from 'react-native-deprecated-custom-components'
-import {observer, inject} from 'mobx-react/native'
-import NetInfoDecorator from '../../common/NetInfoDecorator'
-import Toast from 'react-native-easy-toast'
-import Loading from '../../components/Loading'
-import MenuItems from '../../components/MenuItems'
-import FeedsCategoryBar from "../../components/FeedsCategoryBar";
-import ScrollableTabView from "react-native-scrollable-tab-view";
-import MenuCategory from "./MenuCategory"
+import React, {Component} from "react";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {inject, observer} from "mobx-react/native";
+import NetInfoDecorator from "../../common/NetInfoDecorator";
+import MenuItems from "../../components/MenuItems";
+import MenuCategory from "./MenuCategory";
+import {promise} from  "../../common/HttpTool"
 
-const titles = ['EKP', 'EIP', 'tableau', 'unkwon',"unknow2","unknow2"];
-// const titles = ['EKP', 'EIP', 'tableau'];
-// const titles = ['EKP', 'EIP'];
-const controllers = [
-    {categoryId: 1, listurl: gIntent.ip + '/api/menu', moduleId: 3},
-    {categoryId: 2, listurl: gIntent.ip + '/api/menu', moduleId: 4},
-    {categoryId: 3, listurl: gIntent.ip + '/api/menu', moduleId: 3},
-    {categoryId: 4, listurl: gIntent.ip + '/api/menu', moduleId: 4},
-    {categoryId: 5, listurl: gIntent.ip + '/api/menu', moduleId: 4},
-    {categoryId: 6, listurl: gIntent.ip +'/api/menu', moduleId: 4}
-]
+let titles = []
+let controllers = []
 
 @NetInfoDecorator
 @inject('account', 'app')
 @observer
 export default class FoodEncyclopedia extends Component {
 
-    componentWillMount(){
-        this.state = {
-            isVisiable: false
-        }
+
+    state = {
+        isVisiable: false,
+        isShowTable: false
+    }
+    constructor(props){
+        super(props);
+        promise(gIntent.ip + "/api/getBigMenu").then((datas)=>{
+            if(datas.status == "0"){
+                let list = datas.list;
+                let url = gIntent.ip + "/api/getMenuById";
+                let _titles = ["首页"];
+                let _controllers = [];
+                for(let i = 0;i < list.length; i++){
+                    let data = list[i];
+                    let _controller = {categoryId: data.id,listurl: url + "?id=" + data.id,moduleId: 3}
+                    _titles.push(data.mName);
+                    _controllers.push(_controller);
+                }
+                titles = _titles;
+                controllers = _controllers
+                this.setState({isShowTable: true});
+            }
+        });
     }
 
     onPressAction = () => {
@@ -68,8 +66,8 @@ export default class FoodEncyclopedia extends Component {
 
     render() {
         const {isConnected} = this.props
-        let isVisiable = this.state.isVisiable
-
+        const {isVisiable,isShowTable} = this.state
+        let isShow = isConnected & isShowTable;
         return (
             <View style={{flex: 1}}>
                 <View>
@@ -101,7 +99,7 @@ export default class FoodEncyclopedia extends Component {
                         <MenuItems onMenuPress={this.onMenuPress}/>:<View/>
                     }
                 </View>
-                {isConnected ?
+                {isShow ?
                     <MenuCategory tableName={titles} controllers={controllers}/>: <ReconnectView onPress={this._reconnectHandle}/>}
             </View>
         )

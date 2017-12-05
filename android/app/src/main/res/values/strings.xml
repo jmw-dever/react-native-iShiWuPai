@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">九牧王</string>
+    <string name="android_auto_update_download_progress">正在下载:%1$d%%</string>
+    <string name="android_auto_update_dialog_btn_download">下载</string>
+    <string name="android_auto_update_dialog_btn_cancel">取消</string>
+    <string name="android_auto_update_dialog_title">Apk版本更新</string>
 </resources>

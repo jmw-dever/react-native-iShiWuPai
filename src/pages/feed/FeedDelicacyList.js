@@ -2,21 +2,15 @@
  * Created by ljunb on 2016/11/19.
  * 逛吃-知识
  */
-import React, {PureComponent} from 'react'
-import {
-    StyleSheet,
-    View,
-    ListView,
-    RefreshControl
-} from 'react-native'
-import {observer} from 'mobx-react/native'
-import {reaction} from 'mobx'
-import Loading from '../../components/Loading'
-import LoadMoreFooter from '../../components/LoadMoreFooter'
-import FeedSingleImageCell from '../../components/FeedSingleImageCell'
-import FeedMultiImageCell from '../../components/FeedMultiImageCell'
-import Toast from 'react-native-easy-toast'
-import FeedBaseStore from '../../store/feedBaseStore'
+import React, {PureComponent} from "react";
+import {ListView, RefreshControl, StyleSheet, View} from "react-native";
+import {observer} from "mobx-react/native";
+import {reaction} from "mobx";
+import Loading from "../../components/Loading";
+import LoadMoreFooter from "../../components/LoadMoreFooter";
+import MessageInfo from "../../components/FeedSingleImageCell";
+import Toast from "react-native-easy-toast";
+import FeedBaseStore from "../../store/feedBaseStore";
 
 @observer
 export default class FeedDelicacyList extends PureComponent {
@@ -117,14 +111,10 @@ class DelicacyItem extends PureComponent {
     }
 
     render() {
-        const {feed: {title, source, tail, images}} = this.props
-        let infoCount = 10
-        const cellData = {title, source, images, viewCount: tail,infoCount}
-
-        if (images.length === 1) {
-            return <FeedSingleImageCell {...cellData} onPress={this._onPress} isTrue={this.state.isTrue}/>
-        }
-        return <FeedMultiImageCell {...cellData} onPress={this._onPress}/>
+        const {feed: {title,content, cardImg, publisher, type,createTime}} = this.props
+        const cellData = {title,content, cardImg, publisher,type,createTime}
+        return <MessageInfo {...cellData} onPress={this._onPress} isTrue={this.state.isTrue}/>
+        //return <FeedMultiImageCell {...cellData} onPress={this._onPress}/>
     }
 }
 

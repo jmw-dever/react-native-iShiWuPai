@@ -1,54 +1,80 @@
 /**
  * Created by ljunb on 2016/12/1.
  */
-import React from 'react'
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Image,
-    StyleSheet
-} from 'react-native'
+import React, {PureComponent} from "react";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+
+import MyStorage from "../store/MyStorage";
+
+export default class MessageInfo extends PureComponent{
+
+    state = {
+        viewCount:0
+    }
+
+    constructor(props){
+        super(props);
+        MyStorage.load(props.type+"count",this.onCallBack);
+    }
+
+    onCallBack = (value) => {
+        if(null == value || "undefined" == value || "" == value){
+            value = 0;
+        }
+        this.setState({viewCount: value});
+    }
+    render(){
+        const {viewCount} = this.state
+        let readFlag = true
+        if(viewCount == 0){
+            readFlag = false
+        }
+        const {title,content, cardImg, publisher,type,createTime,onPress} = this.props
+        let text = readFlag?<Text style={styles.infoNum} >{viewCount}</Text>:null
+        return (
+            <TouchableOpacity
+                activeOpacity={0.75}
+                style={styles.container}
+                onPress={onPress}
+            >
+                <View style={{justifyContent: 'space-between'}}>
+                    <Text numberOfLines={2} style={styles.title}>{title}</Text>
+                    <View style={styles.content}>
+                        <Text style={{color: 'rgb(150,150,150)', fontSize: 13}}>{publisher}</Text>
+                        <View style={styles.imgWrapper}>
+                            <Image
+                                style={styles.feedIcon}
+                                source={require('../resource/ic_feed_watch.png')}
+                            />
+                            <Text style={styles.viewCount}>{createTime}</Text>
+                        </View>
+                    </View>
+                </View>
+                <Image
+                    style={styles.image}
+                    source={{uri: cardImg}}
+                    defaultSource={require('../resource/img_news_default.png')}
+                />
+                {text}
+            </TouchableOpacity>
+        )
+    }
+}
+
 
 const FeedSingleImageItem = ({
     title,
-    source,
-    viewCount,
-    images,
-    infoCount,
+    content,
+    cardImg,
+    publisher,
+    type,
+    createTime,
     onPress
 }) => {
-    let readFlag = true
-    if(viewCount == 0){
-        readFlag = false
-    }
-    return (
-        <TouchableOpacity
-            activeOpacity={0.75}
-            style={styles.container}
-            onPress={onPress}
-        >
-            <View style={{justifyContent: 'space-between'}}>
-                <Text numberOfLines={2} style={styles.title}>{title}</Text>
-                <View style={styles.content}>
-                    <Text style={{color: 'rgb(150,150,150)', fontSize: 13}}>{source}</Text>
-                    <View style={styles.imgWrapper}>
-                        <Image
-                            style={styles.feedIcon}
-                            source={require('../resource/ic_feed_watch.png')}
-                        />
-                        <Text style={styles.viewCount}>{viewCount}</Text>
-                    </View>
-                </View>
-            </View>
-            <Image
-                style={styles.image}
-                source={{uri: images[0]}}
-                defaultSource={require('../resource/img_news_default.png')}
-            />
-            <Text style={styles.infoNum} isShow={!readFlag}>{infoCount}</Text>
-        </TouchableOpacity>
-    )
+
+    alert(title)
+
+
 }
 
 const styles = StyleSheet.create({
@@ -102,5 +128,3 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     }
 })
-
-export default FeedSingleImageItem

@@ -1,21 +1,13 @@
 /**
  * Created by ljunb on 2017/2/22.
  */
-import React, { PureComponent } from 'react'
-import {
-    View,
-    Image,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    ToastAndroid,
-    Platform
-} from 'react-native'
-import Header from '../components/LoginHeader'
-import {observer, inject} from 'mobx-react/native'
-import Storage from  '../store/MyStorage'
-import Toast from 'react-native-root-toast'
-import StyleSheet  from '../common/StyleSheet'
+import React, {PureComponent} from "react";
+import {Image, Platform, Text, TextInput, ToastAndroid, TouchableOpacity, View} from "react-native";
+import Header from "../components/LoginHeader";
+import {inject, observer} from "mobx-react/native";
+import Storage from "../store/MyStorage";
+// import Toast from 'react-native-root-toast'
+import StyleSheet from "../common/StyleSheet";
 
 @inject('app')
 @observer
@@ -132,17 +124,19 @@ export default class Login extends PureComponent {
     }
 
     render() {
+        var param = "";
+
         return (
             <View style={{flex: 1, backgroundColor: '#f5f5f5'}}>
                 <Header title={this.state.loginText} onBack={this.onBack}/>
                 <View style={styles.content}>
                     <View style={styles.accountWrapper}>
-                        <TextInput style={styles.textInput} placeholder={this.state.usernamePlaceHoler} onChangeText={(text)=>{
+                        <TextInput style={styles.textInput} value={this.state.username} placeholder={this.state.usernamePlaceHoler} underlineColorAndroid='transparent' onChangeText={(text)=>{
                             this.state.username = text
                         }}></TextInput>
                     </View>
                     <View style={styles.accountWrapper}>
-                        <TextInput secureTextEntry={true} style={styles.textInput} value={this.state.password} placeholder={this.state.passwordPlaceHoler} onChangeText={(text) =>{
+                        <TextInput secureTextEntry={true} style={styles.textInput} value={this.state.password} underlineColorAndroid='transparent'  placeholder={this.state.passwordPlaceHoler} onChangeText={(text) =>{
                             this.state.password = text
                         }}></TextInput>
                     </View>
@@ -168,20 +162,20 @@ const styles = StyleSheet.create({
         paddingTop: 50
     },
     textInput: {
-        height: gScreen.height * 0.06,
         width: gScreen.width * 0.9,
         paddingTop: 5,
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        backgroundColor: __IOS__ ? '#fff' : '#fff',
-        borderRadius: 10,
+        borderRadius: 20,
+        borderColor: "#fff",
+        backgroundColor: '#fff',
         justifyContent: 'center'
     },
     accountWrapper: {
         flexDirection: 'row',
         paddingHorizontal: 20,
-        paddingTop: 5,
+        paddingTop: 15,
         paddingBottom: 30,
         justifyContent: 'space-between',
     },
