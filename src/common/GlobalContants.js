@@ -4,7 +4,7 @@
 import { Dimensions, Platform, PixelRatio } from 'react-native'
 
 global.gIntent = {
-    ip: 'http://172.18.127.167'
+    ip: 'http://192.168.119.155'
 }
 
 global.gScreen = {

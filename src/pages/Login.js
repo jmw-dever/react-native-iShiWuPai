@@ -168,17 +168,20 @@ const styles = StyleSheet.create({
         paddingTop: 50
     },
     textInput: {
+        height: gScreen.height * 0.06,
         width: gScreen.width * 0.9,
         paddingTop: 5,
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
+        backgroundColor: __IOS__ ? '#fff' : '#fff',
+        borderRadius: 10,
         justifyContent: 'center'
     },
     accountWrapper: {
         flexDirection: 'row',
         paddingHorizontal: 20,
-        paddingTop: 15,
+        paddingTop: 5,
         paddingBottom: 30,
         justifyContent: 'space-between',
     },

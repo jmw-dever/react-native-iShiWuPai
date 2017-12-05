@@ -36,57 +36,57 @@ export default class MenuCategoryItem extends PureComponent{
     };
 
     onPress = (murl) => {
-        // Linking.canOpenURL(murl).then(supported => { // weixin://  alipay://
-        //     if (supported) {
-        //         Linking.openURL(murl);
-        //     } else {
-        //         ToastAndroid.show(`请先安装XXX`,ToastAndroid.SHORT);
-        //     }
-        // });
-        alert(murl);
+        Linking.canOpenURL(murl).then(supported => { // weixin://  alipay://
+            if (supported) {
+                Linking.openURL(murl);
+            } else {
+                ToastAndroid.show(`请先安装XXX`,ToastAndroid.SHORT);
+            }
+        }); 
+        //alert(murl);
     }
     render () {
         const {foodCategoryList,isFetching,isRefreshing} = this.foodEncyclopediaStore
         return (
             <ScrollView style={{flex: 1}}
-                  refreshControl={
-                      <RefreshControl
-                          refreshing={isRefreshing}
-                          onRefresh={this._onRefresh}
-                          colors={['rgb(217, 51, 58)']}
-                      />
-                  }
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={isRefreshing}
+                                onRefresh={this._onRefresh}
+                                colors={['rgb(217, 51, 58)']}
+                            />
+                        }
             >
                 {!isFetching &&
-                    <View style={styles.categoryView}>
-                        <View style={styles.groupHeader}>
-                            <Text style={{color: 'gray',alignSelf: 'center'}}>标题</Text>
-                            <View style={{width: gScreen.width - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
-                                <Image style={{width: gScreen.width - 16 * 2, height: 14}}
-                                       source={require('../../resource/img_home_list_bg.png')}
-                                />
-                            </View>
-                        </View>
-                        <View style={styles.categoryContainer}>
-                            {foodCategoryList.map((category) => {
-                                return (
-                                    <TouchableOpacity
-                                        key={category.mindex}
-                                        activeOpacity={0.75}
-                                        style={styles.category}
-                                        onPress={() => this.onPress(category.murl)}
-                                    >
-                                        <Image
-                                            style={styles.categoryIcon}
-                                            source={{uri: category.mimageView}}
-                                            resizeMode="contain"
-                                        />
-                                        <Text style={styles.categoryTitle}>{category.mtitle}</Text>
-                                    </TouchableOpacity>
-                                )
-                            })}
+                <View style={styles.categoryView}>
+                    <View style={styles.groupHeader}>
+                        <Text style={{color: 'gray',alignSelf: 'center'}}>标题</Text>
+                        <View style={{width: gScreen.width - 16 * 2, height: 14, backgroundColor: '#f5f5f5'}}>
+                            <Image style={{width: gScreen.width - 16 * 2, height: 14}}
+                                   source={require('../../resource/img_home_list_bg.png')}
+                            />
                         </View>
                     </View>
+                    <View style={styles.categoryContainer}>
+                        {foodCategoryList.map((category) => {
+                            return (
+                                <TouchableOpacity
+                                    key={category.mindex}
+                                    activeOpacity={0.75}
+                                    style={styles.category}
+                                    onPress={() => this.onPress(category.murl)}
+                                >
+                                    <Image
+                                        style={styles.categoryIcon}
+                                        source={{uri: category.mimageView}}
+                                        resizeMode="contain"
+                                    />
+                                    <Text style={styles.categoryTitle}>{category.mtitle}</Text>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    </View>
+                </View>
                 }
                 <Loading isShow={isFetching}/>
                 <Toast ref={toast => this.toast = toast}/>

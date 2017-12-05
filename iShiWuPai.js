@@ -27,54 +27,7 @@ export default class Root extends React.Component {
     }
 
     componentDidMount(){
-        JPushModule.notifyJSDidLoad((resultCode) => {
-           if (resultCode === 0) {
 
-           }
-         });
-
-        // 接收自定义消息
-        JPushModule.addReceiveCustomMsgListener((message) => {
-            if(null != message && "undefined" != message && "" != message){
-                //this.setState({pushMsg: message});
-                //alert(JSON.stringify(message));
-            }
-        });
-        // 接收推送通知
-        JPushModule.addReceiveNotificationListener((message) => {
-            if(null != message && "undefined" != message && "" != message){
-                let extras = JSON.parse(message.extras);
-                let messageKey = extras.messageKey
-                MyStorage.load(messageKey,(msg) =>{
-                    let myCurrent = [];
-                    if(msg != null){
-                        myCurrent = msg;
-                    }
-                    alert(msg);
-                    myCurrent.push(message);
-                    MyStorage.save(messageKey,myCurrent);
-                });
-
-                MyStorage.load(messageKey+"count",(value)=>{
-                    if(null != value){
-                        value ++;
-                    }else{
-                        value = 1;
-                    }
-                    MyStorage.save(messageKey+"count",value)
-                });
-            }
-        });
-        // 打开通知
-        JPushModule.addReceiveOpenNotificationListener((map) => {
-            const {navigator} = this.props
-            let extras = JSON.parse(map.extras);
-            let messageKey = extras.messageKey
-            MyStorage.save('currentKey',messageKey);
-            MyStorage.save(messageKey+"count",0);
-            this.state.navigator = this.props.navigator
-            JPushModule.jumpToPushActivity("JPushDetailActivity");
-        });
 
     }
 
