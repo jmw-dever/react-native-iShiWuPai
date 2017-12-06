@@ -10,7 +10,7 @@ import React, {
     Platform
 } from 'react-native';
 
-export default class WebView extends Component {
+export default class JoeWebView extends Component {
 
     constructor(props) {
         super(props);
