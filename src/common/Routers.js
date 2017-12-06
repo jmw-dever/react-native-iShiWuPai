@@ -18,6 +18,8 @@ const router = {
 
     'MessageDetail': require('../pages/MessageDetail'),
 
+    'JoeWebView': require("../components/JoeWebView"),
+
     // home
     'Foods': require('../pages/home/Foods'),
 

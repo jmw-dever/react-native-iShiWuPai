@@ -65,7 +65,7 @@ export default class FoodEncyclopedia extends Component {
     }
 
     render() {
-        const {isConnected} = this.props
+        const {isConnected,navigator} = this.props
         const {isVisiable,isShowTable} = this.state
         let isShow = isConnected & isShowTable;
         return (
@@ -95,7 +95,7 @@ export default class FoodEncyclopedia extends Component {
                     }
                 </View>
                 {isShow ?
-                    <MenuCategory tableName={titles} controllers={controllers}/>: <ReconnectView onPress={this._reconnectHandle}/>}
+                    <MenuCategory tableName={titles} controllers={controllers} navigator={navigator}/>: <ReconnectView onPress={this._reconnectHandle}/>}
             </View>
         )
 
