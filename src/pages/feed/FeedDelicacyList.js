@@ -50,7 +50,11 @@ export default class FeedDelicacyList extends PureComponent {
         this.delicacyListStore.fetchFeedList()
     };
 
-    _onEndReach = () => this.delicacyListStore.page++
+    _onEndReach = () => {
+        if(!this.delicacyListStore.isNoMore){
+            this.delicacyListStore.page++
+        }
+    }
 
     _renderFooter = () => <LoadMoreFooter isNoMore={this.delicacyListStore.isNoMore}/>
 

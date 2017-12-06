@@ -87,7 +87,7 @@ export default class FoodEncyclopedia extends Component {
                     </View>
                     <Image
                         style={styles.headerContainer}
-                        source={require('../../resource/img_home_bg.png')}
+                        source={require('../../resource/working.jpg')}
                     >
                         <Image
                             style={styles.headerLogo}

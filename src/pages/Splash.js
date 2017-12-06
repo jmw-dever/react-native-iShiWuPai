@@ -52,7 +52,7 @@ export default class Splash extends Component {
         return (
             <Image
                 style={{width: gScreen.width, height: gScreen.height}}
-                source={require('../resource/img_intro_4.png')}
+                source={{uri: 'ic_default'}}
             />
         )
     }
