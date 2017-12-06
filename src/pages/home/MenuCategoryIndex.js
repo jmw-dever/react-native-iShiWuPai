@@ -3,7 +3,7 @@
  */
 
 import React, {PureComponent} from "react";
-import {ScrollView, StyleSheet} from "react-native";
+import {ScrollView, StyleSheet,View,Text} from "react-native";
 import {observer} from "mobx-react/native";
 import {reaction} from "mobx";
 
@@ -27,7 +27,9 @@ export default class MenuCategoryIndex extends PureComponent{
     render () {
         return (
             <ScrollView style={{flex: 1}}>
-
+                <View>
+                    <Text>123</Text>
+                </View>
             </ScrollView>
         )
     }

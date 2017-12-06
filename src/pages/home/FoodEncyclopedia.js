@@ -88,13 +88,8 @@ export default class FoodEncyclopedia extends Component {
                     <Image
                         style={styles.headerContainer}
                         source={require('../../resource/working.jpg')}
-                    >
-                        <Image
-                            style={styles.headerLogo}
-                            source={require('../../resource/ic_head_logo.png')}
-                            resizeMode="contain"
-                        />
-                    </Image>
+                    />
+
                     {isVisiable?
                         <MenuItems onMenuPress={this.onMenuPress}/>:<View/>
                     }
@@ -142,12 +137,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     headerContainer: {
-        height: 220,
-        width: gScreen.window,
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingTop: __IOS__ ? 20 + 15 : 15,
-        paddingBottom: 28,
         paddingHorizontal: 16,
         backgroundColor: 'rgba(1,1,1,0)',
         overflow: 'hidden'
